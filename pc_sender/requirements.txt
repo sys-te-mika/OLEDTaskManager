@@ -2,6 +2,10 @@
 psutil>=5.9.0
 pyserial>=3.5
 
+# Tray launcher (run_tray.pyw) — install to run in background
+pystray>=0.19.0
+Pillow>=10.0.0
+
 # Optional — NVIDIA GPU usage & temperature
 # GPUtil>=1.4.0
 

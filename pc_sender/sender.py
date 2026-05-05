@@ -215,7 +215,13 @@ def build_packet(net_up_kbs: float, net_down_kbs: float) -> bytes:
     return line.encode("ascii")
 
 
-def main() -> None:
+def main(stop_event=None) -> None:
+    """Entry point. Pass a threading.Event as stop_event to allow clean shutdown
+    from external code (e.g. the tray launcher). If None, runs until Ctrl-C."""
+    import threading
+    if stop_event is None:
+        stop_event = threading.Event()
+
     parser = argparse.ArgumentParser(description="OLEDTaskManager PC sender")
     parser.add_argument("port",      nargs="?", default="COM3",
                         help="Serial port (default: COM3)")
@@ -248,9 +254,13 @@ def main() -> None:
     print("[INFO] Streaming data — press Ctrl+C to stop.\n")
 
     try:
-        while True:
+        while not stop_event.is_set():
             global _net_up_ema, _net_down_ema
-            time.sleep(args.interval)
+            # Sleep in small chunks so stop_event is checked promptly
+            for _ in range(int(args.interval / 0.05)):
+                if stop_event.is_set():
+                    break
+                time.sleep(0.05)
 
             # Compute network delta
             curr_net  = psutil.net_io_counters()
