@@ -1,0 +1,10 @@
+# Core — always required
+psutil>=5.9.0
+pyserial>=3.5
+
+# Optional — NVIDIA GPU usage & temperature
+# GPUtil>=1.4.0
+
+# Optional — CPU/GPU temperatures on Windows
+# Requires LibreHardwareMonitor running as Administrator
+# wmi>=1.5.1
